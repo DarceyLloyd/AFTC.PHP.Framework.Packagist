@@ -8,9 +8,17 @@
 use AFTC\Framework\Config as Config;
 
 Config::$show_page_generation_time = true;
-Config::$site_path = "http://127.0.0.1/TheresNoPlaceLikeHome";
+
+Config::$website_root_url = "http://127.0.0.1/TheresNoPlaceLikeHome";
+
+//Config::$website_root_file_path = ""; \\ You should not need to modify this, however if you do, here it is
+//Config::$website_root_file_path = __DIR__ . "\\"; // NOTE Added \ at end so I can easily remove AFTC dir from end as we need root
+//Config::$website_root_file_path = str_replace("\\AFTC\\","",Config::$website_root_file_path);
+
 Config::$page_not_found = "404.htm";
+
 Config::$encryption_key = "+++___+++1234+++___!!!:@~@:@~}{}{&&*8asd3tsdgsdg88888csaoi98uIICZZZZZXC<>?.";
+
 Config::$enable_sessions = true;
 Config::$session_https = false;
 Config::$session_http_only = true; // This stops javascript being able to access the session id

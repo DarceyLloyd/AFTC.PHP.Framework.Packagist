@@ -12,14 +12,14 @@ $path = __DIR__ . "../../Functions.php";
 require_once($path);
 
 use AFTC\Framework\Config as Config;
-$path = __DIR__ . "../../../AFTC/Config.php";
+$path = Config::$website_root_file_path . "/AFTC/Config.php";
 require_once($path);
 
 // Utilities class for the AFTC PHP Framework
 use AFTC\Framework\Utilities as Utils;
 
 use AFTC\Framework\Router as Router;
-$path = __DIR__ . "../../../AFTC/Routes.php";
+$path = Config::$website_root_file_path . "/AFTC/Routes.php";
 require_once($path);
 
 class AFTC
@@ -27,7 +27,8 @@ class AFTC
     public function __construct()
     {
         trace("AFTC.__construct()");
-        trace("AFTC.__construct(): Config::\$site_path = " . Config::$site_path);
+        trace("site_path = " . Config::$website_root_url);
+        trace("website_root_file_path = " . Config::$website_root_file_path);
         Utils::staticTest();
 
         // Configure sessions

@@ -10,8 +10,12 @@ namespace AFTC\Framework;
 class Config
 {
     public static $show_page_generation_time = true;
-    public static $site_path = "http://127.0.0.1/TheresNoPlaceLikeHome";
+
+    public static $website_root_url = "";
+    public static $website_root_file_path = "";
+
     public static $page_not_found = "404.htm"; // This is your 404 page not found! (HOST can handle the rest)
+
     public static $encryption_key = "+++___+++1234+++___!!!:@~@:@~}{}{&&*8asd3tsdgsdg88888csaoi98uIICZZZZZXC<>?.";
 
     public static $enable_sessions = true;
