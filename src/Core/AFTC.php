@@ -7,6 +7,10 @@
 
 namespace AFTC\Framework\Core;
 
+// Some global functions for use
+$path = __DIR__ . "../../Functions.php";
+require_once($path);
+
 use AFTC\Framework\Config as Config;
 $path = __DIR__ . "../../../AFTC/Config.php";
 require_once($path);

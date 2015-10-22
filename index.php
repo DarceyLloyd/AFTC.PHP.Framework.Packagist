@@ -8,9 +8,6 @@
 // Profiling start
 $before = microtime(true);
 
-// Include some global functions for use
-require_once("src\Functions.php");
-
 // Error configuration
 //error_reporting(0); // Turn off all error reporting
 error_reporting(-1); // Report all PHP errors
