@@ -1,0 +1,17 @@
+/* If you have locally stored font the following code will get you started with them, just change the font family names */
+/*
+@font-face {
+  font-family: 'Arimo';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Arimo'), url(../fonts/arimo/Arimo400.woff) format('woff');
+}
+*/
+
+/* Within template.htm there is a commented out css include for some google fonts, 
+if you wish to use them simply use the family name in your content.css styles via
+font-family: 'Arimo', sans-serif;
+and
+font-family: 'Open Sans', sans-serif;
+*/
+

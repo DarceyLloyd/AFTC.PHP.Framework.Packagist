@@ -1,0 +1,39 @@
+/*	Base
+	I try and only put global styling and main site structure in this file for easy 
+	editing / maintenance
+-  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  */
+* { } /* usage of * can put a high load on page processing if you have complex pages */
+
+html, body {
+	
+}
+
+
+
+
+/* Structural css (try not to add inner site styling here, makes for easy structural changes)
+-  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  */
+#outer_container {
+	width: 100%;
+	height: 100%;
+}
+
+/* centered content with a fixed width for you to work within */
+#inner_container {
+	width: 940px;
+	margin-left: auto;
+	margin-right: auto;
+	background: #FFFFFF;
+}
+
+#content_container {
+	
+}
+
+
+
+
+
+
+
+
