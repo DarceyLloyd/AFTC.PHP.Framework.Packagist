@@ -5,7 +5,7 @@
  * Date: 10/2015
  */
 
-namespace AFTC\Framework;
+namespace AFTC\Framework\Core;
 
 
 class Router

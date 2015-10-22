@@ -7,20 +7,25 @@
 
 namespace AFTC\Framework\Core;
 
+
 // Some global functions for use
 $path = __DIR__ . "../../Functions.php";
 require_once($path);
+
 
 use AFTC\Framework\Config as Config;
 $path = Config::$website_root_file_path . "/AFTC/Config.php";
 require_once($path);
 
+
 // Utilities class for the AFTC PHP Framework
 use AFTC\Framework\Utilities as Utils;
 
-use AFTC\Framework\Router as Router;
+
+use AFTC\Framework\Core\Router as Router;
 $path = Config::$website_root_file_path . "/AFTC/Routes.php";
 require_once($path);
+
 
 class AFTC
 {

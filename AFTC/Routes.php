@@ -5,7 +5,7 @@
  * Date: 10/2015
  */
 
-use AFTC\Framework\Router as Router;
+use AFTC\Framework\Core\Router as Router;
 
 /**
  * USAGE:
