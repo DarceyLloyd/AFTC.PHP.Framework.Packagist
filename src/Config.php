@@ -9,10 +9,16 @@ namespace AFTC\Framework;
 
 class Config
 {
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     public static $show_page_generation_time = true;
 
-    public static $website_root_url = "";
-    public static $website_root_file_path = "";
+	public static $domain = ""; // All other domains will be considered
+	public static $root_url = "";
+	public static $root_relative_path = "";
+	public static $server_root_path = "";
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
 
     public static $page_not_found = "404.htm"; // This is your 404 page not found! (HOST can handle the rest)
 
@@ -29,14 +35,33 @@ class Config
     public static $live_server_domain = "www.allforthecode.co.uk/aftc_php_framework"; // EG: "www.allforthecode.co.uk" = LIVE  Anything other is DEV
 
     // Live database configuration
-    public static $database_live_host = "127.0.0.1";
+    public static $database_live_host = "255.255.255.255";
     public static $database_live_name = "AllForTheCodeDB1";
-    public static $database_live_username = "Username@AllForTheCode";
-    public static $database_live_password = "Password@Cryptic";
+    public static $database_live_username = "Cryptic";
+    public static $database_live_password = "Cryptic";
 
     // Dev database configuration
     public static $database_dev_host = "127.0.0.1";
     public static $database_dev_name = "AllForTheCodeDB1Dev";
-    public static $database_dev_username = "DevUsername@AllForTheCode";
-    public static $database_dev_password = "DevPassword@Cryptic";
+    public static $database_dev_username = "Cryptic";
+    public static $database_dev_password = "Cryptic";
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	public static function init()
+	{
+		self::$server_root_path = self::getServerRootPath();
+	}
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	public static function getServerRootPath()
+	{
+		return str_replace("\\vendor\\aftc\\framework\\src","",__DIR__);
+		//return str_replace("vendor\\aftc\\framework\\src","",strtolower(__DIR__));
+	}
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 }

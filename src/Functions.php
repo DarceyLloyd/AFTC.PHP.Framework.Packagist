@@ -44,7 +44,7 @@ if (!function_exists('forceFilePutContents')) {
 if (!function_exists('trace')) {
     function trace($str)
     {
-        echo("<span style='font-size:16px; background: #FFFFFF;'>" . $str . "</span><br/>\n");
+        echo("<span style='font-size:16px; background: #FFFFFF; border:1px solid #000000;background:#FFFFFF;padding:3px; display:table; z-index:99999'>" . $str . "</span><br/>\n");
     }
 }
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -75,6 +75,7 @@ if (!function_exists('vd')) {
     function vd($var)
     {
         var_dump($var);
+        echo("<br>\n");
     }
 }
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -376,7 +377,7 @@ if (!function_exists('sanitize')) {
     {
         $strip = array("~", "`", "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "_", "=", "+", "[", "{", "]",
             "}", "\\", "|", ";", ":", "\"", "'", "&#8216;", "&#8217;", "&#8220;", "&#8221;", "&#8211;", "&#8212;",
-            "â€�?", "â€“", ",", "<", ".", ">", "/", "?");
+            "â€�?", "â€“", ",", "<", ".", ">", "/", "?");
         $clean = trim(str_replace($strip, "", strip_tags($string)));
         $clean = preg_replace('/\s+/', "-", $clean);
         $clean = ($anal) ? preg_replace("/[^a-zA-Z0-9]/", "", $clean) : $clean;
