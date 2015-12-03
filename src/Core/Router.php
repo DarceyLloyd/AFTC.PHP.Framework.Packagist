@@ -10,19 +10,28 @@ namespace AFTC\Framework\Core;
 
 class Router
 {
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	protected static $routes = [];
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	public function __construct()
 	{
 
 	}
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	public static function addRoute($URL, $Controller, $Function, $Cache)
 	{
 		//trace("addRoute(" . $URL . "," . $Controller . "," . $Function . "," . $cache . ")");
 		array_push(self::$routes, [$URL, $Controller, $Function, $Cache]);
 	}
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	public static function listRoutes()
 	{
 		//var_dump(self::$routes);
@@ -37,7 +46,10 @@ class Router
 		}
 		echo("</ul>");
 	}
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	public static function getRouteByURL($url)
 	{
 		foreach (self::$routes as $key => $value) {
@@ -54,9 +66,8 @@ class Router
 				break;
 			}
 		}
-
-		echo("<2>AFTC Framework: Route not found!");
 		return null;
 	}
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 }

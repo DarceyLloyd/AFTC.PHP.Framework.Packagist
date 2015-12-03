@@ -212,10 +212,6 @@ if (!function_exists('dumpSession')) {
     function dumpSession()
     {
 
-        if (!session_id()) {
-            session_start();
-        }
-
         $html = "";
         if (sizeOf($_SESSION) == 0) {
             $html = "

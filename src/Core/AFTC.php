@@ -7,25 +7,31 @@
 
 namespace AFTC\Framework\Core;
 
+// Autoload namespace method
+//composer dumpautoload -o
+require_once(__DIR__ . "../../../vendor/autoload.php");
+
+
+use \AFTC\Framework\Config as Config;
+use \AFTC\Framework\Utilities as Utils;
+//use \AFTC\Framework\Core\Router as Router;
+//use \AFTC\Framework\Controller as Controller;
+
 
 // Some global functions for use
 $path = __DIR__ . "../../Functions.php";
 require_once($path);
 
-
-use AFTC\Framework\Config as Config;
-
-$path = Config::$server_root_path . "/AFTC/Config.php";
+// User config to overide what is set in Framework Config
+$path = __DIR__ . "../../../../../../AFTC/Config.php";
 require_once($path);
 
 
 // Utilities class for the AFTC PHP Framework
-use AFTC\Framework\Utilities as Utils;
 
 
-use AFTC\Framework\Core\Router as Router;
-
-$path = Config::$server_root_path . "/AFTC/Routes.php";
+// User routes which will use router
+$path = __DIR__ . "../../../../../../AFTC/Routes.php";
 require_once($path);
 
 
@@ -68,8 +74,14 @@ class AFTC
 
 		// Var ini
 		$this->iniVars();
+	}
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-		// Load up the controller or do we output the cache file?
+
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	public function processRoute()
+	{
+		// Load up and output the controller or do we output the cache file?
 		if ($this->route["cache"])
 		{
 			// Does the cache file exist?
@@ -80,6 +92,7 @@ class AFTC
 			}
 		} else {
 			$this->processController();
+			echo($this->page_class->html);
 		}
 	}
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -91,6 +104,7 @@ class AFTC
 		// Configure sessions
 		// http://php.net/manual/en/session.configuration.php
 		if (Config::$enable_sessions) {
+
 
 			ini_set('use_strict_mode ', 1); //Available since PHP 5.5.2
 			ini_set('session.use_only_cookies', 1); // Forces sessions to only use cookies.
@@ -111,30 +125,15 @@ class AFTC
 
 			session_start(); // Start the php session
 			session_name(Config::$session_name);
-			session_regenerate_id(true);
+
+			ob_start();
 
 			if (ini_set('session.use_only_cookies', 1) === FALSE) {
 				echo("Could not initiate a safe session (ini_set)");
 				exit();
 			}
 
-			// A little additional session security
-			// These is not 100% full proof but helps with security so we are going to add it in
-			if (!isset($_SESSION["user_ip"])) {
-				$_SESSION["user_ip"] = Utils::getUserIP();
-			}
-			if (!isset($_SESSION["user_agent"])) {
-				$_SESSION["user_agent"] = $_SERVER['HTTP_USER_AGENT'];
-			}
 
-			// Validate and regenerate the session id
-			if ($_SESSION['user_ip'] !== Utils::getUserIP() || $_SESSION['user_agent'] !== $_SERVER["HTTP_USER_AGENT"]) {
-				Utils::destroySession();
-				session_unset();
-				session_destroy();
-				session_regenerate_id(true);
-				session_regenerate_id();
-			}
 		}
 	}
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -146,6 +145,9 @@ class AFTC
 		// Instance ID
 		$this->id = rand(0, 99999999);
 
+		// Config init
+		Config::init();
+
 		// Get URL path
 		if (isset($_GET["aftc_url_path"]) && !empty($_GET["aftc_url_path"])) {
 			$this->url = $_GET["aftc_url_path"];
@@ -154,7 +156,16 @@ class AFTC
 		// Routing
 		$this->route = Router::getRouteByURL($this->url);
 		//vd($this->route);
-		$this->controller = CONFIG::$server_root_path . "\\AFTC\\Controllers\\" . $this->route["controller"] . ".php";
+
+		// 404
+		if ($this->route == null)
+		{
+			header("location:".Config::$page_not_found);
+			exit;
+		}
+
+		// Controller file
+		$this->controller = CONFIG::$server_root_path . Config::$root_absolute_path . "/AFTC/Controllers/" . $this->route["controller"] . ".php";
 
 		// Cache file
 		$function = $this->route["function"];
@@ -165,7 +176,7 @@ class AFTC
 		$this->page_cache_file = "page-" . $this->route["controller"] . $function;
 		$remove = ["-","\\"];
 		$this->page_cache_file = str_replace($remove,"",$this->page_cache_file);
-		$this->page_cache_file = Config::$server_root_path."\\cache.".$this->page_cache_file.".htm";
+		$this->page_cache_file = Config::$server_root_path."/AFTC/cache/".$this->page_cache_file.".htm";
 		$function = null;
 		$remove = null;
 
@@ -199,8 +210,13 @@ class AFTC
 		} else {
 			// Lets hope the developer is doing something with the controllers class constructor!
 		}
+
+		//trace("Config::server_root_path = " . Config::$server_root_path);
+		// OUTPUT PAGE HTML
+		//echo($this->page_class->html);
 	}
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 
 
 

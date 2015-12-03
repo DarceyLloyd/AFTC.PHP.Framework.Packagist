@@ -15,6 +15,9 @@
     }
   },
   "require": {
-    "php": ">=5.5.2"
+    "php": ">=5.5.0",
+    "phpmailer/phpmailer": "dev-master",
+    "defuse/php-encryption": "dev-master",
+
   }
 }
