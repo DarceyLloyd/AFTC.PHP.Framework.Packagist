@@ -116,11 +116,11 @@ if (!function_exists('dumpServer')) {
 			</div></br>";
         } else {
             $html .= "<div style='display: block; border: 1px dashed #CC0000; margin-top: 10px; margin-bottom: 5px; padding: 5px;'>";
-            $html .= "<table style='display: inline-block; padding:0;margin-top:10px; min-width: 100px;'>";
-            $html .= "<caption style='margin: 0; text-align: left; font-size: 12px; margin-bottom:10px; font-weight: bold;'>POST DATA</caption>";
+            $html .= "<table style='display: inline-block; padding:0; margin:0; width:100%;overflow:auto;'>";
+            $html .= "<caption style='margin: 0; text-align: left; font-size: 12px; font-weight: bold;'>SERVER DATA</caption>";
 
-            $cssKey = "style='font-size: 11px; font-weight: bold; background: #CCCCCC; color: #000000; padding-left: 5px; padding-right: 5px;'";
-            $cssValue = "style='font-size: 11px; font-weight: bold; background: #DDDDDD; color: #000000; padding-left: 5px; padding-right: 5px;'";
+            $cssKey = "style='font-size: 11px; font-weight: bold; background: #CCCCCC; color: #000000; padding-left: 5px; padding-right: 5px;vertical-align:top;'";
+            $cssValue = "style='font-size: 11px; font-weight: bold; background: #DDDDDD; color: #000000; padding-left: 5px; padding-right: 5px;vertical-align:top;'";
             foreach ($_SERVER as $key => $value) {
                 $html .= "<tr>";
                 $html .= "<td $cssKey>" . $key . "</th>";
@@ -149,12 +149,12 @@ if (!function_exists('dumpPost')) {
 			</span>";
             $html .= "<div style='clear:both;'></div>";
         } else {
-            $html .= "<span style='display: inline-block; border: 1px dashed #CC0000; margin-top: 10px; margin-bottom: 5px; padding: 5px;'>";
-            $html .= "<table style='display: inline-block; padding:0;margin-top:10px; min-width: 100px;'>";
-            $html .= "<caption style='margin: 0; text-align: left; font-size: 12px; margin-bottom:10px; font-weight: bold;'>POST DATA</caption>";
+            $html .= "<div style='display: block; border: 1px dashed #CC0000; margin-top: 10px; margin-bottom: 5px; padding: 5px;'>";
+            $html .= "<table style='display: inline-block; padding:0; margin:0; width:100%;overflow:auto;'>";
+            $html .= "<caption style='margin: 0; text-align: left; font-size: 12px; font-weight: bold;'>POST DATA</caption>";
 
-            $cssKey = "style='font-size: 11px; font-weight: bold; background: #CCCCCC; color: #000000; padding-left: 5px; padding-right: 5px; color: #000000'";
-            $cssValue = "style='font-size: 11px; font-weight: bold; background: #DDDDDD; padding-left: 5px; padding-right: 5px;'";
+            $cssKey = "style='font-size: 11px; font-weight: bold; background: #CCCCCC; color: #000000; padding-left: 5px; padding-right: 5px;vertical-align:top;'";
+            $cssValue = "style='font-size: 11px; font-weight: bold; background: #DDDDDD; color: #000000; padding-left: 5px; padding-right: 5px;vertical-align:top;'";
             foreach ($_POST as $key => $value) {
                 $html .= "<tr>";
                 $html .= "<td $cssKey>" . $key . "</td>";
@@ -184,12 +184,12 @@ if (!function_exists('dumpGet')) {
 			</span>";
             $html .= "<div style='clear:both;'></div>";
         } else {
-            $html .= "<span style='display: inline-block; border: 1px dashed #CC0000; margin-top: 10px; margin-bottom: 5px; padding: 5px;'>";
-            $html .= "<table style='display: inline-block; padding:0;margin-top:10px; min-width: 100px;'>";
-            $html .= "<caption style='margin: 0; text-align: left; font-size: 12px; margin-bottom:10px; font-weight: bold;'>GET DATA</caption>";
+            $html .= "<div style='display: block; border: 1px dashed #CC0000; margin-top: 10px; margin-bottom: 5px; padding: 5px;'>";
+            $html .= "<table style='display: inline-block; padding:0; margin:0; width:100%;overflow:auto;'>";
+            $html .= "<caption style='margin: 0; text-align: left; font-size: 12px; font-weight: bold;'>GET DATA</caption>";
 
-            $cssKey = "style='font-size: 11px; font-weight: bold; background: #CCCCCC; color: #000000; padding-left: 5px; padding-right: 5px; color: #000000'";
-            $cssValue = "style='font-size: 11px; font-weight: bold; background: #DDDDDD; padding-left: 5px; padding-right: 5px;'";
+            $cssKey = "style='font-size: 11px; font-weight: bold; background: #CCCCCC; color: #000000; padding-left: 5px; padding-right: 5px;vertical-align:top;'";
+            $cssValue = "style='font-size: 11px; font-weight: bold; background: #DDDDDD; color: #000000; padding-left: 5px; padding-right: 5px;vertical-align:top;'";
             foreach ($_GET as $key => $value) {
                 $html .= "<tr>";
                 $html .= "<td $cssKey>" . $key . "</td>";
@@ -221,11 +221,11 @@ if (!function_exists('dumpSession')) {
             $html .= "<div style='clear:both;'></div>";
         } else {
             $html .= "<div style='display: block; border: 1px dashed #CC0000; margin-top: 10px; margin-bottom: 5px; padding: 5px;'>";
-            $html .= "<table style='display: inline-block; padding:0;margin-top:10px; min-width: 100px;'>";
-            $html .= "<caption style='margin: 0; text-align: left; font-size: 12px; margin-bottom:10px; font-weight: bold;'>SESSION DATA</caption>";
+            $html .= "<table style='display: inline-block; padding:0; margin:0; width:100%;overflow:auto;'>";
+            $html .= "<caption style='margin: 0; text-align: left; font-size: 12px; font-weight: bold;'>SESSION DATA</caption>";
 
-            $cssKey = "style='font-size: 11px; font-weight: bold; background: #CCCCCC; color: #000000; padding-left: 5px; padding-right: 5px;'";
-            $cssValue = "style='font-size: 11px; font-weight: bold; background: #DDDDDD; color: #000000; padding-left: 5px; padding-right: 5px;'";
+            $cssKey = "style='font-size: 11px; font-weight: bold; background: #CCCCCC; color: #000000; padding-left: 5px; padding-right: 5px;vertical-align:top;'";
+            $cssValue = "style='font-size: 11px; font-weight: bold; background: #DDDDDD; color: #000000; padding-left: 5px; padding-right: 5px;vertical-align:top;'";
             foreach ($_SESSION as $key => $value) {
                 $html .= "<tr>";
                 $html .= "<td $cssKey>" . $key . "</th>";
@@ -257,12 +257,12 @@ if (!function_exists('dumpCookies')) {
 			</div>";
             $html .= "<div style='clear:both;'></div>";
         } else {
-            $html .= "<div style='display: block; border: 1px dashed #CC0000; margin-top: 10px; margin-bottom: 5px; padding: 5px;'>";
-            $html .= "<table style='display: inline-block; padding:0;margin-top:10px; min-width: 100px;'>";
-            $html .= "<caption style='margin: 0; text-align: left; font-size: 12px; margin-bottom:10px; font-weight: bold;'>COOKIE DATA</caption>";
+            $html .= "<div style='display: block; border: 1px dashed #CC0000; margin:0; padding: 5px;'>";
+            $html .= "<table style='display: inline-block; padding:0; margin:0; width:100%;overflow:auto;'>";
+            $html .= "<caption style='margin: 0; text-align: left; font-size: 12px; font-weight: bold;'>COOKIE DATA</caption>";
 
-            $cssKey = "style='font-size: 11px; font-weight: bold; background: #CCCCCC; color: #000000; padding-left: 5px; padding-right: 5px;'";
-            $cssValue = "style='font-size: 11px; font-weight: bold; background: #DDDDDD; color: #000000; padding-left: 5px; padding-right: 5px;'";
+            $cssKey = "style='font-size: 11px; font-weight: bold; background: #CCCCCC; color: #000000; padding-left: 5px; padding-right: 5px;vertical-align:top;'";
+            $cssValue = "style='font-size: 11px; font-weight: bold; background: #DDDDDD; color: #000000; padding-left: 5px; padding-right: 5px;vertical-align:top;'";
             foreach ($_COOKIE as $key => $value) {
                 $html .= "<tr>";
                 $html .= "<td $cssKey>" . $key . "</th>";
@@ -274,7 +274,7 @@ if (!function_exists('dumpCookies')) {
             $html .= "<div style='clear:both;'></div>";
         }
 
-        echo($html);
+        return($html);
     }
 }
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

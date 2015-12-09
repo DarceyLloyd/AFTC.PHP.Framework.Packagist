@@ -26,6 +26,7 @@ class Router
 	public static function addRoute($URL, $Controller, $Function, $Cache)
 	{
 		//trace("addRoute(" . $URL . "," . $Controller . "," . $Function . "," . $cache . ")");
+		//array_push(self::$routes, [$URL, strtolower($Controller), $Function, $Cache]);
 		array_push(self::$routes, [$URL, $Controller, $Function, $Cache]);
 	}
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -66,7 +67,7 @@ class Router
 				break;
 			}
 		}
-		return null;
+		return "";
 	}
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

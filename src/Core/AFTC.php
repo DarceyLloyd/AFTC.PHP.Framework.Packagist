@@ -44,8 +44,8 @@ class AFTC
 	protected $url = "";
 	protected $url_parts = [];
 	protected $url_no_of_dirs = 0;
-	protected $route = []; //url,controller,function
-	protected $controller = "";
+	public $route = []; //url,controller,function
+	public $controller = "";
 	protected $page_class;
 	protected $page_cache_file;
 	protected $page_cache_file_exists;
@@ -92,6 +92,8 @@ class AFTC
 			}
 		} else {
 			$this->processController();
+
+			// OUTPUT CONTROLLER GENERATED HTML
 			echo($this->page_class->html);
 		}
 	}
@@ -153,19 +155,19 @@ class AFTC
 			$this->url = $_GET["aftc_url_path"];
 		}
 
-		// Routing
+		// Get the route
 		$this->route = Router::getRouteByURL($this->url);
-		//vd($this->route);
 
 		// 404
 		if ($this->route == null)
 		{
-			header("location:".Config::$page_not_found);
+
+			header("location:".Config::$page_not_found."?page=".$this->route["url"]);
 			exit;
 		}
 
 		// Controller file
-		$this->controller = CONFIG::$server_root_path . Config::$root_absolute_path . "/AFTC/Controllers/" . $this->route["controller"] . ".php";
+		$this->controller = Config::$server_root_path . Config::$root_absolute_path . "/AFTC/Controllers/" . $this->route["controller"] . ".php";
 
 		// Cache file
 		$function = $this->route["function"];
