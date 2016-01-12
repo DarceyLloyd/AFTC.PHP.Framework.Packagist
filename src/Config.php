@@ -41,16 +41,22 @@ class Config
 
 	public static $cookie_expiration_time = 48; // time in hours
 
-	public static $database_driver = "PDO"; // TODO: PDO & MySQLi
+	public static $salt1 = "OLzaBU"; // Salt 1 - 6 chars recommended
+	public static $salt2 = "IrvNHc"; // Salt 2 - 6 chars recommended
+	public static $salt3 = "312Y6I"; // Salt 3 - 6 chars recommended
+
+	public static $database_driver = ""; // TODO: PDO & MySQLi
 
 	// Live database configuration
 	public static $database_live_host = "255.255.255.255";
+	public static $database_live_port = "3306";
 	public static $database_live_name = "AllForTheCodeDB1";
 	public static $database_live_username = "CrypticName";
 	public static $database_live_password = "CrypticPassword";
 
 	// Dev database configuration
 	public static $database_dev_host = "127.0.0.1";
+	public static $database_dev_port = "3306";
 	public static $database_dev_name = "AllForTheCodeDB1Dev";
 	public static $database_dev_username = "CrypticName";
 	public static $database_dev_password = "CrypticPassword";

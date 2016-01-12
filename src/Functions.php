@@ -102,6 +102,29 @@ if (!function_exists('dumpArray')) {
 
 
 
+function dumpAvailableClasses()
+{
+    $html = "";
+    $html .= "<div style='display: block; border: 1px dashed #CC0000; margin-top: 10px; margin-bottom: 5px; padding: 5px;'>";
+    $html .= "<table style='display: inline-block; padding:0; margin:0; width:100%;overflow:auto;'>";
+    $html .= "<caption style='margin: 0; text-align: left; font-size: 12px; font-weight: bold;'>AVAILABLE CLASSES</caption>";
+
+    $cssKey = "style='font-size: 11px; font-weight: bold; background: #CCCCCC; color: #000000; padding-left: 5px; padding-right: 5px;vertical-align:top;'";
+    $cssValue = "style='font-size: 11px; font-weight: bold; background: #DDDDDD; color: #000000; padding-left: 5px; padding-right: 5px;vertical-align:top;'";
+    foreach (get_declared_classes() as $key => $value) {
+        $html .= "<tr>";
+        $html .= "<td $cssKey>" . $key . "</th>";
+        $html .= "<td $cssValue>" . $value . "</th>";
+        $html .= "<tr>";
+    }
+    $html .= "</table>";
+    $html .= "</div></br>";
+
+    echo($html);
+
+}
+
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 if (!function_exists('dumpServer')) {

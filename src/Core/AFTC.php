@@ -34,35 +34,40 @@ require_once($path);
 $path = __DIR__ . "../../../../../../AFTC/Routes.php";
 require_once($path);
 
+$path = __DIR__ . "../../Ext/Singleton.php";
+use AFTC\Framework\Singleton;
+
+//use AFTC\Framework\App\Controllers\login as Login;
+
+/*
+trait singletons {
+	public static function getInstance(){
+
+	}
+}
+*/
 
 class AFTC
 {
+	// Traits  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	use Singleton;
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	public static $instance;
-	public $id = 0;
 
-	protected $url = "";
-	protected $url_parts = [];
-	protected $url_no_of_dirs = 0;
+
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	private $url = "";
+	//private $url_parts = [];
+	//private $url_no_of_dirs = 0;
 	public $route = []; //url,controller,function
-	public $controller = "";
-	protected $page_class;
-	protected $page_cache_file;
-	protected $page_cache_file_exists;
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	private $controller_file = "";
+	private $controller;
+	private $page_class;
+	private $page_cache_file;
+	private $page_cache_file_exists;
 
-
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	// Singleton
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	public static function getInstance()
-	{
-		//trace("aftc.getInstance()");
-		if (self::$instance === NULL) {
-			self::$instance = new self();
-		}
-		return self::$instance;
-	}
+	public $helpers = [];
+	public $models = [];
+	public $components = [];
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
@@ -74,28 +79,6 @@ class AFTC
 
 		// Var ini
 		$this->iniVars();
-	}
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	public function processRoute()
-	{
-		// Load up and output the controller or do we output the cache file?
-		if ($this->route["cache"])
-		{
-			// Does the cache file exist?
-			if ($this->page_cache_file_exists){
-				$this->loadCachedPage();
-			} else {
-				$this->processController();
-			}
-		} else {
-			$this->processController();
-
-			// OUTPUT CONTROLLER GENERATED HTML
-			echo($this->page_class->html);
-		}
 	}
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -141,12 +124,10 @@ class AFTC
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
+
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	private function iniVars()
 	{
-		// Instance ID
-		$this->id = rand(0, 99999999);
-
 		// Config init
 		Config::init();
 
@@ -167,7 +148,7 @@ class AFTC
 		}
 
 		// Controller file
-		$this->controller = Config::$server_root_path . Config::$root_absolute_path . "/AFTC/Controllers/" . $this->route["controller"] . ".php";
+		$this->controller_file = Config::$server_root_path . Config::$root_absolute_path . "/AFTC/Controllers/" . $this->route["controller"] . ".php";
 
 		// Cache file
 		$function = $this->route["function"];
@@ -183,8 +164,33 @@ class AFTC
 		$remove = null;
 
 		$this->page_cache_file_exists = Utils::doesFileExist($this->page_cache_file);
-		//vd($this->page_cache_file);
-		//vd($this->page_cache_file_exists);
+	}
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	public function processRoute()
+	{
+		// Load up and output the controller or do we output the cache file?
+		if ($this->route["cache"])
+		{
+			// Does the cache file exist?
+			if ($this->page_cache_file_exists){
+				$this->loadCachedPage();
+			} else {
+				$this->processController();
+			}
+		} else {
+			$this->processController();
+
+			// OUTPUT CONTROLLER GENERATED HTML
+
+			//trace(Controller::getId());
+			//echo($this->controller->html);
+		}
+
+
 	}
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -196,26 +202,49 @@ class AFTC
 	}
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	public function processController()
-	{
-		require_once($this->controller);
-		$this->page_class = new $this->route["class"]();
 
-		if (!$this->route["function"]){
-			if (method_exists($this->page_class,"init"))
-			{
-				$this->page_class->init();
-			} else {
-				// Lets hope the developer is doing something with the controllers class constructor!
-			}
+
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	private function processController()
+	{
+
+		$controller_name = $this->route["controller"];
+		$controller_class_name = $this->route["class"];
+		$controller_class_function = $this->route["function"];
+
+		$class = '\\AFTC\\Framework\\App\\Controllers\\' . $controller_class_name;
+		$this->controller = new $class();
+
+		if (!$controller_class_function) {
+
 		} else {
-			// Lets hope the developer is doing something with the controllers class constructor!
+			if (method_exists($this->controller,$controller_class_function))
+			{
+				// Prevent duplicate execution where class & function are entered as the same name
+				if ($controller_class_name != $controller_class_function)
+				{
+					$this->controller->$controller_class_function();
+				}
+			} else {
+				trace("AFTC Framework message: The controller [" . $controller_class_name . "] doesn't have the function [" . $controller_class_function . "]
+				that is defined in the route for execution!");
+			}
 		}
 
-		//trace("Config::server_root_path = " . Config::$server_root_path);
-		// OUTPUT PAGE HTML
-		//echo($this->page_class->html);
+
+		// OUTPUT HTML
+		echo($this->controller->html);
+
+
+		// Clean up database connection
+		$db = Database::getInstance();
+		if ($db->isConnected()){
+			$db->disconnect();
+			unset($db);
+			$db = null;
+		}
+
+
 	}
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
