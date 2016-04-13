@@ -13,7 +13,6 @@ class Model
 {
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	protected $db;
-	protected $driver;
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	
 	
@@ -21,26 +20,58 @@ class Model
 	public function __construct()
 	{
 		$this->db = Database::getInstance();
-		$this->driver = $this->db->driver;
 		//trace("Model.Construct(): DB Instance created [" . $this->db->getID() . "]");
 	}
+
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	
 
-
-
-	public function getRow($sql,$params = null){
-		return $this->db->driver->getRow($sql,$params);
+	protected function getRow($sql, $params = null)
+	{
+		return $this->db->driver->getRow($sql, $params);
 	}
 
-	public function getRows($sql,$params = null){
-		return $this->db->driver->getRows($sql,$params);
+	protected function getRows($sql, $params = null)
+	{
+		return $this->db->driver->getRows($sql, $params);
 	}
 
-	public function query($sql,$params = null){
-		return $this->db->driver->query($sql,$params);
+	protected function query($sql, $params = null)
+	{
+		return $this->db->driver->query($sql, $params);
 	}
 
+	protected function insert($sql, $params = null)
+	{
+		return $this->db->driver->insert($sql, $params);
+	}
+
+	protected function update($sql, $params = null)
+	{
+		return $this->db->driver->update($sql, $params);
+	}
+
+	protected function delete($sql, $params = null)
+	{
+		return $this->db->driver->delete($sql, $params);
+	}
+
+	protected function like($sql, $input)
+	{
+		return $this->db->driver->like($sql, $input);
+	}
+
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	public function getResult($index=null)
+	{
+		if ($index==null){
+			return $this->db->driver->result;
+		} else {
+			return $this->db->driver->result[$index];
+		}
+
+	}
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -50,6 +81,13 @@ class Model
 	}
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	public function getInsertId()
+	{
+		return $this->db->driver->getInsertId();
+	}
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

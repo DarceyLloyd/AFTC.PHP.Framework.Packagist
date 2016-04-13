@@ -6,6 +6,7 @@
 
 namespace AFTC\Framework\Core\Database\Drivers;
 
+use AFTC\Framework\Config;
 use AFTC\Framework\Core\singletons;
 use PDO;
 
@@ -24,9 +25,9 @@ class PDODriver
 	
 	
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	public function __construct($connection_paramaters)
+	public function __construct()
 	{
-		$this->params = $connection_paramaters;
+		
 	}
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	
@@ -37,9 +38,9 @@ class PDODriver
 		if ($this->con == null) {
 			try {
 				$this->con = new PDO(
-					"mysql:host=" . $this->params["host"] . ";dbname=" . $this->params["db"] . ";port=" . $this->params["port"],
-					$this->params["username"],
-					$this->params["password"]
+					"mysql:host=" . Config::$database_host . ";dbname=" . Config::$database_name . ";port=" . Config::$database_port,
+					Config::$database_username,
+					Config::$database_password
 				);
 				/*
 				 * INFO:
@@ -47,9 +48,11 @@ class PDODriver
 				 * PDO::ERRMODE_WARNING – database-related errors will cause a warning to be emitted, but execution will continue.
 				 * PDO::ERRMODE_EXCEPTION – database-related errors will cause a PDOException to be thrown.
 				 */
-				//$this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
+				//$this->con->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
 				$this->con->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 				$this->con->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+				$this->con->setAttribute(PDO::ATTR_EMULATE_PREPARES, false ); // Fixes casting issues between string and int
+				$this->con->setAttribute(PDO::MYSQL_ATTR_INIT_COMMAND,"SET NAMES utf8");
 				$this->connected = true;
 			} catch (PDOException $e) {
 				trace('PDO CONNECTION ERROR: ' . $e->getMessage());
@@ -79,7 +82,7 @@ class PDODriver
 
 
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	public function query($sql, $params = null)
+	public function delete($sql,$params=null)
 	{
 		$query_time = microtime(true);
 
@@ -90,10 +93,73 @@ class PDODriver
 		try {
 			$this->query = $this->con->prepare($sql);
 			$this->query->execute($params);
-			// Manual use of this is recommended fetch is faster but not by much
-			// So we will return the query for the dev to use in the model as they see fit
-			// Also as this is the model and we are not processing for output this should be done in the controller
-			//$this->result = $this->query->fetchAll();
+			$this->query_time = microtime(true) - $query_time;
+			return $this->query;
+		} catch (PDOException $e) {
+			throw new Exception($e->getMessage());
+		}
+	}
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	public function update($sql,$params=null)
+	{
+		$query_time = microtime(true);
+
+		if ($this->con == null) {
+			$this->connect();
+		}
+
+		try {
+			$this->query = $this->con->prepare($sql);
+			$this->query->execute($params);
+			$this->query_time = microtime(true) - $query_time;
+			return $this->query;
+		} catch (PDOException $e) {
+			throw new Exception($e->getMessage());
+		}
+	}
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	public function insert($sql,$params=null)
+	{
+		$query_time = microtime(true);
+
+		if ($this->con == null) {
+			$this->connect();
+		}
+
+		try {
+			$this->query = $this->con->prepare($sql);
+			$this->query->execute($params);
+			$this->query_time = microtime(true) - $query_time;
+			return $this->query;
+		} catch (PDOException $e) {
+			throw new Exception($e->getMessage());
+		}
+	}
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	public function query($sql, $params = null)
+	{
+		// QUERY - FOR GENERAL ALL
+		// WARNING: $this->result = $this->query->fetch(); IS NOT EXECUTED ALLOWING INSERT, UPDAE, DELETE
+
+		$query_time = microtime(true);
+
+		if ($this->con == null) {
+			$this->connect();
+		}
+
+		try {
+			$this->query = $this->con->prepare($sql);
+			$this->query->execute($params);
+			//$this->result = $this->query->fetch();
 			$this->query_time = microtime(true) - $query_time;
 			return $this->query;
 		} catch (PDOException $e) {
@@ -179,6 +245,30 @@ class PDODriver
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
+
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	public function like($sql, $input)
+	{
+		$query_time = microtime(true);
+
+		if ($this->con == null) {
+			$this->connect();
+		}
+
+		try {
+			$this->query = $this->con->prepare($sql);
+			$this->query->bindValue(1, "%$input%", PDO::PARAM_STR);
+			$this->query->execute();
+			$this->result = $this->query->fetchAll();
+			return $this->result;
+		} catch (PDOException $e) {
+			throw new Exception($e->getMessage());
+		}
+	}
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	public function fetchAssoc()
 	{
@@ -191,6 +281,8 @@ class PDODriver
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	public function getNumRows()
 	{
+		//vd(get_class_methods($this->con));
+		//vd(get_class_methods($this->query));
 		return $this->query->rowCount();
 	}
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -199,7 +291,9 @@ class PDODriver
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	public function getInsertId()
 	{
-		return $this->query->lastInsertId();
+		//vd(get_class_methods($this->con));
+		//vd(get_class_methods($this->query));
+		return($this->con->lastInsertId());
 	}
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

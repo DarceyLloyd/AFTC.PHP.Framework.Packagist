@@ -8,6 +8,8 @@
 namespace AFTC\Framework\Core;
 
 
+use AFTC\Framework\Config;
+
 class Router
 {
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -54,9 +56,21 @@ class Router
 	public static function getRouteByURL($url)
 	{
 		foreach (self::$routes as $key => $value) {
-			if ($value[0] === $url) {
+			//$rurl = urldecode($value[0]);
+
+			$RouteURL = $value[0];
+			$BrowserURL = $url;
+
+			if (!Config::$case_sensitive_urls){
+				$RouteURL = strtolower($RouteURL);
+				$BrowserURL = strtolower($BrowserURL);
+			}
+			$rurl = $value[0];
+
+			if ($RouteURL === $BrowserURL) {
 				$parts = explode("/",$value[1]);
 				$class = $parts[ sizeof($parts)-1 ];
+				//trace("ROUTE FOUND: ROUTE URL: [" . $RouteURL . "] BROWSER URL: [" . $BrowserURL . "]");
 				return [
 					"url" => $value[0],
 					"controller" => $value[1],

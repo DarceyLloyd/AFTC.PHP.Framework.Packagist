@@ -6,6 +6,7 @@
 
 namespace AFTC\Framework\Core;
 use AFTC\Framework\Config as Config;
+use AFTC\Framework\App\Variables;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class Controller
@@ -18,7 +19,7 @@ class Controller
 	public $js_files = []; // Array of JS files so you don't need multiple views just for new js includes
 	public $html = "";
 
-	public $page_access_group = "public"; // public || admin || db_group_names etc
+	public $page_access_group = ""; // public || user || admin || db_group_names etc
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
@@ -48,9 +49,84 @@ class Controller
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	public function cssIncludes($array)
+	{
+		$html = "\n";
+		foreach ($array as $value)
+		{
+			$html .= "\t<link type='text/css' href='" . Config::$root_absolute_path . "/includes/css/" . $value . "' rel='stylesheet'/>\n";
+		}
+		return $html;
+	}
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	public function jsIncludes($array)
+	{
+		$html = "\n";
+		foreach ($array as $value)
+		{
+			$html .= "\t<script type=\"text/javascript\" src=\"" . Config::$root_absolute_path . "/includes/js/" . $value . "\"></script>\n";
+		}
+		return $html;
+	}
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	public function getData($index)
+	{
+		if (array_key_exists($index,$this->data)) {
+			return($this->data[$index]);
+		} else {
+			return "";
+		}
+	}
+	public function outputData($index)
+	{
+		if (array_key_exists($index,$this->data)) {
+			echo($this->data[$index]);
+		} else {
+			echo("");
+		}
+	}
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
 
+
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	public function getVar($index)
+	{
+		// I want error notificaion if not found
+		return(Variables::$injectables[$index]);
+
+		/*
+		// If you want error protection
+		if (isSet(Variables::$injectables[$index])) {
+			echo(Variables::$injectables[$index]);
+		} else {
+			echo("UNDEFINED");
+		}
+		*/
+	}
+	public function outputVar($index)
+	{
+		// I want error notificaion if not found
+		echo(Variables::$injectables[$index]);
+
+		/*
+		// If you want error protection
+		if (isSet(Variables::$injectables[$index])) {
+			echo(Variables::$injectables[$index]);
+		} else {
+			echo("UNDEFINED");
+		}
+		*/
+	}
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

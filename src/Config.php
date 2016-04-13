@@ -10,7 +10,8 @@ namespace AFTC\Framework;
 class Config
 {
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	public static $show_page_generation_time = true;
+	public static $show_page_generation_time = false;
+	public static $case_sensitive_urls = true;
 
 	public static $path_method = "relative"; // relative || absolute
 
@@ -30,7 +31,7 @@ class Config
 	public static $root_relative_path = "";
 	public static $root_absolute_path = "";
 
-	public static $server_root_path = ""; // Set this in init() if you have any issues
+	public static $server_root_path = ""; // Set this in AFTC Framework>Config->init() if you have any issues set it manually
 
 	public static $page_not_found = "404.htm"; // This is your 404 page not found! (HOST can handle the rest)
 
@@ -39,11 +40,11 @@ class Config
 	public static $session_http_only = true; // This stops javascript being able to access the session id
 	public static $session_name = "aftc";
 
-	public static $cookie_expiration_time = 48; // time in hours
+	public static $cookie_expiration_time = 0; // time in hours
 
-	public static $salt1 = "OLzaBU"; // Salt 1 - 6 chars recommended
-	public static $salt2 = "IrvNHc"; // Salt 2 - 6 chars recommended
-	public static $salt3 = "312Y6I"; // Salt 3 - 6 chars recommended
+	// MUST BE 4 AND ABOVE
+	// WARNING: NUMBERS OVER 10 CAN SLOW DOWN PAGE GENERATION TIME CONSIDERABLY!!
+	public static $password_hashing_cost = 12;
 
 	public static $database_driver = ""; // TODO: PDO & MySQLi
 
@@ -60,6 +61,13 @@ class Config
 	public static $database_dev_name = "AllForTheCodeDB1Dev";
 	public static $database_dev_username = "CrypticName";
 	public static $database_dev_password = "CrypticPassword";
+
+	// Database live & dev resolved variables
+	public static $database_host = "";
+	public static $database_port = "";
+	public static $database_name = "";
+	public static $database_username = "";
+	public static $database_password = "";
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -75,24 +83,34 @@ class Config
 
 		// Set variables depending on whether we are on the development or live servers
 		$domain = "";
-		if (isset($_SERVER["HTTP_HOST"])){
+		if (isset($_SERVER["HTTP_HOST"])) {
 			$domain = $_SERVER["HTTP_HOST"];
 		} else {
 			$domain = $_SERVER["SERVER_NAME"];
 		}
-		$chk_dom = str_replace("http://","",self::$domain_dev);
 
-		if ($_SERVER["HTTP_HOST"] == $chk_dom)
-		{
+		if ($_SERVER["HTTP_HOST"] == self::$domain_dev) {
 			self::$domain = self::$domain_dev;
 			self::$root_url = self::$root_url_dev;
 			self::$root_relative_path = self::$root_relative_path_dev;
 			self::$root_absolute_path = self::$root_absolute_path_dev;
+
+			self::$database_host = self::$database_dev_host;
+			self::$database_port = self::$database_dev_port;
+			self::$database_name = self::$database_dev_name;
+			self::$database_username = self::$database_dev_username;
+			self::$database_password = self::$database_dev_password;
 		} else {
 			self::$domain = self::$domain_live;
 			self::$root_url = self::$root_url_live;
 			self::$root_relative_path = self::$root_relative_path_live;
 			self::$root_absolute_path = self::$root_absolute_path_live;
+
+			self::$database_host = self::$database_live_host;
+			self::$database_port = self::$database_live_port;
+			self::$database_name = self::$database_live_name;
+			self::$database_username = self::$database_live_username;
+			self::$database_password = self::$database_live_password;
 		}
 	}
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

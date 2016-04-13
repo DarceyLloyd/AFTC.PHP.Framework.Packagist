@@ -15,22 +15,102 @@ class Utilities
 {
 
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	public static function setSession($key,$value)
+	public static function urlEncodeArray($array)
 	{
-		//$_SESSION[ $key ] = Crypto::encrypt($value,Config::$encryption_key);
-		$_SESSION[ base64_encode(Crypto::encrypt($key,Config::$encryption_key)) ] = Crypto::encrypt($value,Config::$encryption_key);
-		//$_SESSION[ base64_encode(Crypto::encrypt($key,Config::$encryption_key)) ] = Crypto::encrypt($value,Config::$encryption_key);
+		$output = array();
+		foreach ($array as $value) {
+			array_push($output,$value);
+		}
+		return $output;
 	}
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	public static function getSession($key)
+	public static function xssClean($input)
 	{
-		return $_SESSION[ base64_encode(Crypto::encrypt($key,Config::$encryption_key)) ];
-		//return $_SESSION[ Crypto::decrypt($key,Config::$encryption_key) ];
+		$output = rawurldecode($input);
+		$output = filter_var($output, FILTER_SANITIZE_STRING);
+		return $output;
 	}
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	public static function getGet($param)
+	{
+		if (isSet($_GET[$param])) {
+			return $_GET[$param];
+		} else {
+			return null;
+		}
+	}
+	public static function getCleanGet($param)
+	{
+		if (isSet($_GET[$param])) {
+			return self::xssClean($_GET[$param]);
+		} else {
+			return null;
+		}
+	}
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	public static function getPost($param)
+	{
+		if (isSet($_POST[$param])) {
+			return $_POST[$param];
+		} else {
+			return null;
+		}
+	}
+	public static function getCleanPost($param)
+	{
+		if (isSet($_POST[$param])) {
+			return self::xssClean($_POST[$param]);
+		} else {
+			return null;
+		}
+	}
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	public static function convertZeroAndEmptyToNull($input){
+		if ($input === 0){
+			//trace("FOUND: input === 0 on [" . $input . "]");
+			return null;
+		}
+		if ($input === ""){
+			//trace("FOUND: input === '' on [" . $input . "]");
+			return null;
+		}
+		if (strlen($input)==0){
+			//trace("FOUND: strlen(input) == 0 on [" . $input . "]");
+			return null;
+		}
+		if ($input == "null"){
+			//trace("FOUND: input == 'null' on [" . $input . "]");
+			return null;
+		}
+
+		//trace("NOT FOUND: on input [" . $input . "]");
+		return $input;
+	}
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+	
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	public static function removeTrailingSlash($string)
+	{
+		return rtrim($string, '/');
+	}
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	
+
 
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	public static function generateRandomString($length = 10) {
@@ -86,6 +166,7 @@ class Utilities
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	public static function getUserIP()
 	{
+		// NOTE THERE IS NO 100% SECURE METHOD OF GETTING THE USERS IP!
 		$ip = getenv('HTTP_CLIENT_IP') ?:
 			getenv('HTTP_X_FORWARDED_FOR') ?:
 				getenv('HTTP_X_FORWARDED') ?:
@@ -97,21 +178,9 @@ class Utilities
 	}
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	public static function sessionDestory()
-	{
-		session_start();
-		session_unset();
-		session_destroy();
-		session_write_close();
-		setcookie(session_name(),'',0,'/');
-		session_regenerate_id(true);
-	}
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
 
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	public static function getAllStringsBetweenFrom($startDelimiter, $endDelimiter, $str)
+	public static function getStringBetween($startDelimiter, $endDelimiter, $str)
 	{
 		$contents = array();
 		$startDelimiterLength = strlen($startDelimiter);
@@ -135,4 +204,123 @@ class Utilities
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	public static function getBoolean($input)
+	{
+		$msg = "AFTC UTILITY: getBoolean is unable to get a boolean value from input: [" . $input . "] datatype: [". gettype($input) . "]";
+		//http://php.net/manual/en/function.gettype.php
+		switch (gettype($input))
+		{
+			// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+			case "boolean":
+				// really!?
+				return $input;
+				break;
+			// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+			case "string":
+
+				if ($input == ""){
+					return false;
+				}
+
+				if ($input == "true"){
+					return true;
+				}
+
+				if ($input == "false"){
+					return false;
+				}
+
+				if ($input == "1"){
+					return true;
+				}
+
+				if ($input == "0"){
+					return false;
+				}
+
+				if (strtolower($input) == "yes"){
+					return true;
+				}
+
+				if (strtolower($input) == "no"){
+					return false;
+				}
+
+				if (strtolower($input) == "y"){
+					return true;
+				}
+
+				if (strtolower($input) == "n"){
+					return false;
+				}
+
+				if (strtolower($input) == "null"){
+					return false;
+				}
+
+				return $msg;
+
+				break;
+			// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+			case "integer":
+				if ($input == 0){
+					return false;
+				} else {
+					return true;
+				}
+				break;
+			// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+			case "double":
+				if ($input == 0){
+					return false;
+				}
+
+				if ($input == 1){
+					return true;
+				}
+
+				return $msg;
+				break;
+			// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+			case "NULL":
+				return false;
+				break;
+			// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+			default:
+				return $msg;
+			break;
+			// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+		}
+	}
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+	
+
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	public static function toString($input)
+	{
+		//http://php.net/manual/en/function.gettype.php
+		switch (gettype($input))
+		{
+			// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+			case "boolean":
+				if ($input){
+					return "true";
+				} else {
+					return "false";
+				}
+				break;
+			// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+			case "NULL":
+				return "NULL";
+				break;
+			// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+			default:
+				return $input;
+				break;
+			// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+		}
+	}
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 }

@@ -2,7 +2,7 @@
 /**
  * Author: Darcey Lloyd
  * Email: Darcey@AllForTheCode.co.uk
- * Date: 10/2015
+ * Date: 03/2016
  */
 
 namespace AFTC\Framework\Core;
@@ -11,46 +11,41 @@ namespace AFTC\Framework\Core;
 //composer dumpautoload -o
 require_once(__DIR__ . "../../../vendor/autoload.php");
 
+// init custom variables
+use AFTC\Framework\App\Variables;
 
-use \AFTC\Framework\Config as Config;
-use \AFTC\Framework\Utilities as Utils;
-//use \AFTC\Framework\Core\Router as Router;
-//use \AFTC\Framework\Controller as Controller;
+Variables::init();
 
-
-// Some global functions for use
+// Some global functions and utilties for use
 $path = __DIR__ . "../../Functions.php";
 require_once($path);
+use \AFTC\Framework\Utilities as Utils;
 
-// User config to overide what is set in Framework Config
+
+// User config to overide what is set in Framework Config if not been used already
+use AFTC\Framework\Config;
+
 $path = __DIR__ . "../../../../../../AFTC/Config.php";
 require_once($path);
-
-
-// Utilities class for the AFTC PHP Framework
-
+//use \AFTC\Framework\Config;
 
 // User routes which will use router
 $path = __DIR__ . "../../../../../../AFTC/Routes.php";
 require_once($path);
 
-$path = __DIR__ . "../../Ext/Singleton.php";
+
+//$path = __DIR__ . "../../Ext/Singleton.php";
+// Utilities class for the AFTC PHP Framework
 use AFTC\Framework\Singleton;
+use AFTC\Framework\Utilities;
+use Defuse\Crypto\Crypto;
 
-//use AFTC\Framework\App\Controllers\login as Login;
-
-/*
-trait singletons {
-	public static function getInstance(){
-
-	}
-}
-*/
 
 class AFTC
 {
 	// Traits  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	use Singleton;
+
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
@@ -65,6 +60,11 @@ class AFTC
 	private $page_cache_file;
 	private $page_cache_file_exists;
 
+	private $key_file1;
+	private $key1;
+	private $key_file2;
+	private $key2;
+
 	public $helpers = [];
 	public $models = [];
 	public $components = [];
@@ -74,11 +74,59 @@ class AFTC
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	public function __construct()
 	{
+		// Make sure user config has overriden the framework default config!
+		Config::init();
+
+		// Setup encryption keys
+		$this->createEncryptionKeyFiles();
+
 		// Sessions
 		$this->iniSessions();
 
-		// Var ini
-		$this->iniVars();
+		// init
+		$this->init();
+	}
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	
+	
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	private function createEncryptionKeyFiles()
+	{
+		$this->key_file1 = Config::$server_root_path . Config::$root_absolute_path . "/AFTC/key1";
+		$this->key_file2 = Config::$server_root_path . Config::$root_absolute_path . "/AFTC/key2";
+
+		clearstatcache();
+
+		$encryption_files_missing = false;
+
+		// Generate encryption key for Defuse
+		if (!file_exists($this->key_file1)) {
+			$this->key1 = Crypto::CreateNewRandomKey();
+			file_put_contents($this->key_file1, $this->key1);
+
+			$encryption_files_missing = true;
+		}
+
+		// Generate encryption key for AFTC ECB Encryption
+		if (!file_exists($this->key_file2)) {
+			$this->key2 = Utils::generateRandomString(32);
+			$this->key2 = hash('sha256', $this->key2, true);
+			file_put_contents($this->key_file2, $this->key2);
+
+			$encryption_files_missing = true;
+		}
+
+		// Redirect after a pause so that we know encryption keys are available
+		if ($encryption_files_missing) {
+			sleep(2);
+			if (isHTTPS()) {
+				$url = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+			} else {
+				$url = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+			}
+			redirect($url);
+			die;
+		}
 	}
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -89,8 +137,6 @@ class AFTC
 		// Configure sessions
 		// http://php.net/manual/en/session.configuration.php
 		if (Config::$enable_sessions) {
-
-
 			ini_set('use_strict_mode ', 1); //Available since PHP 5.5.2
 			ini_set('session.use_only_cookies', 1); // Forces sessions to only use cookies.
 			ini_set('session.cookie_secure', Config::$session_https);
@@ -109,7 +155,7 @@ class AFTC
 			);
 
 			session_start(); // Start the php session
-			session_name(Config::$session_name);
+			//session_name(Config::$session_name);
 
 			ob_start();
 
@@ -117,38 +163,38 @@ class AFTC
 				echo("Could not initiate a safe session (ini_set)");
 				exit();
 			}
-
-
+			
 		}
 	}
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
-
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	private function iniVars()
+	private function init()
 	{
-		// Config init
-		Config::init();
-
 		// Get URL path
-		if (isset($_GET["aftc_url_path"]) && !empty($_GET["aftc_url_path"])) {
-			$this->url = $_GET["aftc_url_path"];
+		if (isset($_GET["aftc"]) && !empty($_GET["aftc"])) {
+			$this->url = $_GET["aftc"];
+			$this->url = Utilities::removeTrailingSlash($this->url);
 		}
-
+		
 		// Get the route
 		$this->route = Router::getRouteByURL($this->url);
 
-		// 404
-		if ($this->route == null)
-		{
-
-			header("location:".Config::$page_not_found."?page=".$this->route["url"]);
-			exit;
+		if (!is_array($this->route)) {
+			//header("HTTP/1.0 404 Not Found - " . $this->url);
+			redirect(Config::$root_absolute_path . "/" . Config::$page_not_found . "?e=1&page=" . $this->url);
+			die;
 		}
 
 		// Controller file
 		$this->controller_file = Config::$server_root_path . Config::$root_absolute_path . "/AFTC/Controllers/" . $this->route["controller"] . ".php";
+
+
+		if (!file_exists($this->controller_file)) {
+			redirect(Config::$root_absolute_path . "/" . Config::$page_not_found . "?e=2&page=" . $this->url . "&c=" . $this->controller_file);
+			die;
+		}
 
 		// Cache file
 		$function = $this->route["function"];
@@ -157,9 +203,9 @@ class AFTC
 			$function = "init";
 		}
 		$this->page_cache_file = "page-" . $this->route["controller"] . $function;
-		$remove = ["-","\\"];
-		$this->page_cache_file = str_replace($remove,"",$this->page_cache_file);
-		$this->page_cache_file = Config::$server_root_path."/AFTC/cache/".$this->page_cache_file.".htm";
+		$remove = ["-", "\\"];
+		$this->page_cache_file = str_replace($remove, "", $this->page_cache_file);
+		$this->page_cache_file = Config::$server_root_path . "/AFTC/cache/" . $this->page_cache_file . ".htm";
 		$function = null;
 		$remove = null;
 
@@ -168,15 +214,13 @@ class AFTC
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
-
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	public function processRoute()
 	{
 		// Load up and output the controller or do we output the cache file?
-		if ($this->route["cache"])
-		{
+		if ($this->route["cache"]) {
 			// Does the cache file exist?
-			if ($this->page_cache_file_exists){
+			if ($this->page_cache_file_exists) {
 				$this->loadCachedPage();
 			} else {
 				$this->processController();
@@ -198,31 +242,29 @@ class AFTC
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	public function loadCachedPage()
 	{
-		echo( file_get_contents($this->page_cache_file) );
+		echo(file_get_contents($this->page_cache_file));
 	}
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
 
 
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	private function processController()
 	{
 
-		$controller_name = $this->route["controller"];
+		$controller_path = $this->route["controller"];
+		$controller_path = str_replace("/", "\\", $controller_path);
 		$controller_class_name = $this->route["class"];
 		$controller_class_function = $this->route["function"];
+		$this->page_class = '\\AFTC\\Framework\\App\\Controllers\\' . $controller_path;
 
-		$class = '\\AFTC\\Framework\\App\\Controllers\\' . $controller_class_name;
-		$this->controller = new $class();
+		$this->controller = new $this->page_class();
 
 		if (!$controller_class_function) {
 
 		} else {
-			if (method_exists($this->controller,$controller_class_function))
-			{
+			if (method_exists($this->controller, $controller_class_function)) {
 				// Prevent duplicate execution where class & function are entered as the same name
-				if ($controller_class_name != $controller_class_function)
-				{
+				if ($controller_class_name != $controller_class_function) {
 					$this->controller->$controller_class_function();
 				}
 			} else {
@@ -233,12 +275,15 @@ class AFTC
 
 
 		// OUTPUT HTML
-		echo($this->controller->html);
+		if (property_exists($this->controller, "html")) {
+			//header('Content-Type: text/html; charset=utf-8');
+			echo($this->controller->html);
+		}
 
 
 		// Clean up database connection
 		$db = Database::getInstance();
-		if ($db->isConnected()){
+		if ($db->isConnected()) {
 			$db->disconnect();
 			unset($db);
 			$db = null;
@@ -247,18 +292,6 @@ class AFTC
 
 	}
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 }
