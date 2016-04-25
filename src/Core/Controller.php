@@ -28,7 +28,7 @@ class Controller
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	final public function loadView($path)
 	{
-		$view = Config::$server_root_path . Config::$root_absolute_path . "/AFTC/Views/" . $path;
+		$view = Config::$server_root_path . Config::$root_absolute_path . "Application/Views/" . $path;
 
 		// For PHP to be processed and to return the page as a string we have to use ob_get_contents
 		if (inStr(".php", $path)) {
@@ -55,7 +55,7 @@ class Controller
 		$html = "\n";
 		foreach ($array as $value)
 		{
-			$html .= "\t<link type='text/css' href='" . Config::$root_absolute_path . "/includes/css/" . $value . "' rel='stylesheet'/>\n";
+			$html .= "\t<link type='text/css' href='" . Config::$root_absolute_path . "includes/css/" . $value . "' rel='stylesheet'/>\n";
 		}
 		return $html;
 	}
@@ -68,7 +68,7 @@ class Controller
 		$html = "\n";
 		foreach ($array as $value)
 		{
-			$html .= "\t<script type=\"text/javascript\" src=\"" . Config::$root_absolute_path . "/includes/js/" . $value . "\"></script>\n";
+			$html .= "\t<script type=\"text/javascript\" src=\"" . Config::$root_absolute_path . "includes/js/" . $value . "\"></script>\n";
 		}
 		return $html;
 	}
@@ -79,12 +79,12 @@ class Controller
 	public function getData($index)
 	{
 		if (array_key_exists($index,$this->data)) {
-			return($this->data[$index]);
+			return ($this->data[$index]);
 		} else {
 			return "";
 		}
 	}
-	public function outputData($index)
+	public function echoData($index)
 	{
 		if (array_key_exists($index,$this->data)) {
 			echo($this->data[$index]);

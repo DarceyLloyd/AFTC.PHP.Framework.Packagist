@@ -25,12 +25,12 @@ use \AFTC\Framework\Utilities as Utils;
 // User config to overide what is set in Framework Config if not been used already
 use AFTC\Framework\Config;
 
-$path = __DIR__ . "../../../../../../AFTC/Config.php";
+$path = __DIR__ . "../../../../../../Application/Config.php";
 require_once($path);
 //use \AFTC\Framework\Config;
 
 // User routes which will use router
-$path = __DIR__ . "../../../../../../AFTC/Routes.php";
+$path = __DIR__ . "../../../../../../Application/Routes.php";
 require_once($path);
 
 
@@ -92,8 +92,9 @@ class AFTC
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	private function createEncryptionKeyFiles()
 	{
-		$this->key_file1 = Config::$server_root_path . Config::$root_absolute_path . "/AFTC/key1";
-		$this->key_file2 = Config::$server_root_path . Config::$root_absolute_path . "/AFTC/key2";
+		$this->key_file1 = Config::$server_root_path . Config::$root_absolute_path . "Application/key1";
+		$this->key_file2 = Config::$server_root_path . Config::$root_absolute_path . "Application/key2";
+		
 
 		clearstatcache();
 
@@ -183,16 +184,16 @@ class AFTC
 
 		if (!is_array($this->route)) {
 			//header("HTTP/1.0 404 Not Found - " . $this->url);
-			redirect(Config::$root_absolute_path . "/" . Config::$page_not_found . "?e=1&page=" . $this->url);
+			redirect(Config::$root_absolute_path . Config::$page_not_found . "?e=1&page=" . $this->url);
 			die;
 		}
 
 		// Controller file
-		$this->controller_file = Config::$server_root_path . Config::$root_absolute_path . "/AFTC/Controllers/" . $this->route["controller"] . ".php";
+		$this->controller_file = Config::$server_root_path . Config::$root_absolute_path . "Application/Controllers/" . $this->route["controller"] . ".php";
 
 
 		if (!file_exists($this->controller_file)) {
-			redirect(Config::$root_absolute_path . "/" . Config::$page_not_found . "?e=2&page=" . $this->url . "&c=" . $this->controller_file);
+			redirect(Config::$root_absolute_path . Config::$page_not_found . "?e=2&page=" . $this->url . "&c=" . $this->controller_file);
 			die;
 		}
 
@@ -205,7 +206,7 @@ class AFTC
 		$this->page_cache_file = "page-" . $this->route["controller"] . $function;
 		$remove = ["-", "\\"];
 		$this->page_cache_file = str_replace($remove, "", $this->page_cache_file);
-		$this->page_cache_file = Config::$server_root_path . "/AFTC/cache/" . $this->page_cache_file . ".htm";
+		$this->page_cache_file = Config::$server_root_path . "/Application/cache/" . $this->page_cache_file . ".htm";
 		$function = null;
 		$remove = null;
 

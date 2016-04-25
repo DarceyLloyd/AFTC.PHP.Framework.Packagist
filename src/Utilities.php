@@ -15,6 +15,24 @@ class Utilities
 {
 
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	public static function getNiceDateTime()
+	{
+		$now  = date('d-m-y h:i:s'); // outout format 2008-04-04 07:30:00
+		return $now;
+	}
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+	
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	public static function getDateUK($input)
+	{
+		$dt = new \DateTime($input);
+		return $dt->format("d/m/Y");
+	}
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	
+	
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	public static function urlEncodeArray($array)
 	{
 		$output = array();

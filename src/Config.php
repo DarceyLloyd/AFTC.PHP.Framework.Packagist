@@ -11,6 +11,9 @@ class Config
 {
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	public static $show_page_generation_time = false;
+	public static $page_generation_time_logging = false;
+	public static $page_generation_time_append_string = "";
+
 	public static $case_sensitive_urls = true;
 
 	public static $path_method = "relative"; // relative || absolute
