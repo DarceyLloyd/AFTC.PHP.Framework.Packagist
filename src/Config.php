@@ -10,7 +10,7 @@ namespace AFTC\Framework;
 class Config
 {
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	public static $version = "0.9.5.8";
+	public static $version = "0.1";
 
 	// Configuration
 	public static $enable_encryption = false;
