@@ -5,90 +5,62 @@
  */
 
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-if (!function_exists('isHTTPS')) {
-	function isHTTPS()
-	{
-		return
-			(!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
-			|| $_SERVER['SERVER_PORT'] == 443;
-	}
+function vds($var)
+{
+	ob_start();
+	var_dump($var);
+	return htmlspecialchars_decode(strip_tags(ob_get_clean()));
 }
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-if (!function_exists('isStringInArray')) {
-	function isStringInArray($string, $array)
-	{
-		$string = strtolower($string);
-		foreach ($array as $value) {
-			$value = strtolower($value);
-			if (strpos($string, $value) !== false) {
-				return true;
-			}
-		}
-		return false;
-	}
-}
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-if (!function_exists('isInString')) {
-	function isInString($needle, $haystack)
-	{
-		if ($needle != null && $haystack != null) {
+if (!function_exists('logError')) {
+	function logError($arg){
 
-			if (strrpos($haystack, $needle) !== false) {
-				return true;
-			} else {
-				return false;
-			}
-		}
-	}
-}
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-if (!function_exists('xssProtect')) {
-	function xssProtect($arg)
-	{
-		//$str = preg_replace("/[^0-9]+/", "", $arg);
-		$str = preg_replace("/[^a-zA-Z0-9_\-]+/", "", $arg);
-		return $str;
-	}
-}
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-if (!function_exists('forceFilePutContents')) {
-	function forceFilePutContents($filepath, $contents)
-	{
-		try {
-			$isInFolder = preg_match("/^(.*)\/([^\/]+)$/", $filepath, $filepathMatches);
-			if ($isInFolder) {
-				$folderName = $filepathMatches[1];
-				$fileName = $filepathMatches[2];
-				if (!is_dir($folderName)) {
-					mkdir($folderName, 0777, true);
+		$msg = "";
+		switch (strtolower(gettype($arg))) {
+			case "array":
+				$msg .= "Array():\n";
+				foreach ($arg as $key => $value) {
+					$msg .= "\t" . $key . " = " . $value . "\n";
 				}
-			}
-			file_put_contents($filepath, $contents);
-		} catch (Exception $e) {
-			echo "ERR: error writing to '$filepath', " . $e->getMessage();
+				error_log($msg);
+				break;
+
+			case "object":
+				$msg .= "Object():\n";
+				foreach ($arg as $key => $value) {
+					$msg .= "\t" . $key . " = " . $value . "\n";
+				}
+				error_log($msg);
+				break;
+
+			default:
+				error_log($arg);
+				break;
 		}
+
+
 	}
 }
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+if (!function_exists('logClear')) {
+	function logClear(){
+		file_put_contents("w:/xampp/php/logs/php_error_log", "");
+	}
+}
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 if (!function_exists('trace')) {
-	function trace($input="")
+	function trace($input = "")
 	{
 		$html = "";
-		$html .= "<span style='font-size:16px; background: #FFFFFF; border:1px solid #000000;background:#FFFFFF;padding:3px; display:table; z-index:99999'>";
+		$html .= "<span style='font-size:16px; background: #FFFFFF; border:1px solid #000000;padding:3px; display:table; z-index:99999'>";
 		switch (strtolower(gettype($input))) {
 			case "array":
 				$html .= "Array():<br>";
@@ -126,6 +98,95 @@ if (!function_exists('trace')) {
 	}
 }
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+if (!function_exists('vd')) {
+	function vd($var)
+	{
+		echo("<pre style='background: #DDDDDD; border:1px solid #000000; padding:5px; display: inline-block;'>");
+		var_dump($var);
+		echo("</pre><br>\n");
+	}
+}
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+if (!function_exists('isArrayAssociative')) {
+	function isArrayAssociative($array)
+	{
+		for ($i = 0; $i < count($array); $i++) {
+			if (!isset($array[$i])) {
+				return true;
+			}
+		}
+		return false;
+	}
+}
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+
+
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+if (!function_exists('arrayToXML')) {
+	function arrayToXML($array)
+	{
+		$xml = "";
+		foreach ($array as $key => $value) {
+			if (is_array($value)){
+				$xml .= "\t<" . $key . ">\n";
+				arrayToXML($value);
+				$xml .= "\t</" . $key . ">\n";
+			} else {
+				if (instr($key,"_")){
+					$k = str_replace("_","-",$key);
+					$xml .= "\t" . "<" . $k . ">" . $value . "</" . $k . ">\n";
+				} else {
+					$xml .= "\t" . "<" . $key . ">" . $value . "</" . $key . ">\n";
+				}
+
+			}
+		}
+		return $xml;
+	}
+}
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+if (!function_exists('isHTTPS')) {
+	function isHTTPS()
+	{
+		return
+			(!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+			|| $_SERVER['SERVER_PORT'] == 443;
+	}
+}
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+if (!function_exists('isStringInArray')) {
+	function isStringInArray($string, $array)
+	{
+		$string = strtolower($string);
+		foreach ($array as $value) {
+			$value = strtolower($value);
+			if (strpos($string, $value) !== false) {
+				return true;
+			}
+		}
+		return false;
+	}
+}
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 if (!function_exists('showMemoryUsage')) {
@@ -148,15 +209,6 @@ if (!function_exists('showMem')) {
 }
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-if (!function_exists('vd')) {
-	function vd($var)
-	{
-		var_dump($var);
-		echo("<br>\n");
-	}
-}
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 if (!function_exists('redirect')) {
@@ -184,6 +236,7 @@ if (!function_exists('dumpArray')) {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 function dumpAvailableClasses()
 {
 	$html = "";
@@ -203,8 +256,9 @@ function dumpAvailableClasses()
 	$html .= "</div></br>";
 
 	echo($html);
-
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -213,7 +267,7 @@ if (!function_exists('dumpServer')) {
 	{
 		$html = "";
 
-		if (sizeOf($_SERVER) == 0) {
+		if (sizeof($_SERVER) == 0) {
 			$html = "
 			<div style='display: inline-block; border: 1px dashed #CC0000; margin-top: 10px; margin-bottom: 10px; padding: 5px;'>
 				<span style='font-weight: bold;'>dumpPost(): </span><span style=''>NO SERVER DATA TO LIST</span>
@@ -247,7 +301,7 @@ if (!function_exists('dumpPost')) {
 		$html = "<div style='display:table;border:1px solid #000000;background: #444444; color:#FFFFFF;font-size:12px;margin:0; padding:5px;'>";
 		$html .= "<h3 style='margin:0;padding:0;'>\$_POST DUMP</h3>";
 
-		if (sizeOf($_POST) == 0) {
+		if (sizeof($_POST) == 0) {
 			$html .= "<p style='margin:0;padding:0;'>NO POST DATA AVAILABLE</p>";
 		} else {
 			foreach ($_POST as $key => $value) {
@@ -269,7 +323,7 @@ if (!function_exists('dumpGet')) {
 		$html = "<div style='display:table;border:1px solid #000000;background: #444444; color:#FFFFFF;font-size:12px;margin:0; padding:5px;'>";
 		$html .= "<h3 style='margin:0;padding:0;'>\$_GET DUMP</h3>";
 
-		if (sizeOf($_GET) == 0) {
+		if (sizeof($_GET) == 0) {
 			$html .= "<p style='margin:0;padding:0;'>NO GET DATA AVAILABLE</p>";
 		} else {
 			foreach ($_GET as $key => $value) {
@@ -291,7 +345,7 @@ if (!function_exists('dumpSession')) {
 	{
 
 		$html = "";
-		if (sizeOf($_SESSION) == 0) {
+		if (sizeof($_SESSION) == 0) {
 			$html = "
 			<div style='display: inline-block; border: 1px dashed #CC0000; margin-top: 10px; margin-bottom: 10px; padding: 5px;'>
 				<span style='font-weight: bold;'>dumpSession(): </span><span style=''>NO SESSION DATA TO LIST</span>
@@ -327,7 +381,7 @@ if (!function_exists('dumpCookies')) {
 	{
 
 		$html = "";
-		if (sizeOf($_COOKIE) == 0) {
+		if (sizeof($_COOKIE) == 0) {
 			$html = "
 			<div style='display: inline-block; border: 1px dashed #CC0000; margin-top: 10px; margin-bottom: 10px; padding: 5px;'>
 				<span style='font-weight: bold;'>dumpCookies(): </span><span style=''>NO COOKIE DATA TO LIST</span>
@@ -356,31 +410,6 @@ if (!function_exists('dumpCookies')) {
 }
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-if (!function_exists('instr')) {
-	function instr($needle, $haystack)
-	{
-
-		$pos = strpos($haystack, $needle, 0);
-		if ($pos != 0) return true;
-		return false;
-		/*
-		if (strpos($haystack,$needle) !== false){
-			return true;
-		} else {
-			return false;
-		}
-		*/
-	}
-}
-if (!function_exists('instr')) {
-	function inString($haystack, $needle)
-	{
-		instr($haystack, $needle);
-	}
-}
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 if (!function_exists('getPost')) {
@@ -513,40 +542,7 @@ function getSuffixFromFileName($str)
 
 
 // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
-function delete_directory($dirname)
-{
-	$dir_handle = false;
-
-	if (is_dir($dirname)) {
-		$dir_handle = opendir($dirname);
-	} else {
-		trace("delete_directory - Cannot find dir [" . $dirname . "]");
-		return;
-	}
-
-	if (!$dir_handle) {
-		return;
-	} else {
-		while ($file = readdir($dir_handle)) {
-			if ($file != "." && $file != "..") {
-				if (!is_dir($dirname . "/" . $file)) {
-					unlink($dirname . "/" . $file);
-				} else {
-					delete_directory($dirname . '/' . $file);
-				}
-			}
-		}
-	}
-	closedir($dir_handle);
-	rmdir($dirname);
-	return;
-}
-
-// -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
-
-
-// -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
-function debugFileUploads()
+function dumpFileUploads()
 {
 	foreach ($_FILES as $key => $file) {
 
@@ -554,133 +550,11 @@ function debugFileUploads()
 		trace("Uploaded: " . $file['name']);
 		trace("Uploaded: " . $file['type']);
 		trace("Uploaded: " . $file['size']);
+		trace("Uploaded: " . $file['error']);
 		trace("Uploaded: " . $file['tmp_name']);
 		trace("");
 		//trace("Uploaded: " . $_FILES[$file]["name"]);
 	}
-}
-
-// -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
-
-
-// -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
-function debugFileUpload($formFileUploadTagName)
-{
-
-	// Debug file upload
-	if ($_FILES[$formFileUploadTagName]["error"] > 0) {
-		echo "Error: " . $_FILES[$formFileUploadTagName]["error"] . "<br />";
-	} else {
-		echo "Upload: " . $_FILES[$formFileUploadTagName]["name"] . "<br />";
-		echo "Type: " . $_FILES[$formFileUploadTagName]["type"] . "<br />";
-		echo "Size: " . ($_FILES[$formFileUploadTagName]["size"] / 1024) . " Kb<br />";
-		echo "Stored in: " . $_FILES[$formFileUploadTagName]["tmp_name"] . "<hr />";
-	}
-
-
-}
-
-// -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
-
-// -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
-function fDeleteFile($file)
-{
-	$success = false;
-	if (file_exists($file)) {
-		if (unlink($file)) {
-			$success = true;
-		}
-		return $success;
-	} else {
-		$success = true;
-		return $success;
-	}
-}
-
-// -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
-
-
-// -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
-function recursiveDelete($str)
-{
-	if (is_file($str)) {
-		return @unlink($str);
-	} elseif (is_dir($str)) {
-		$scan = glob(rtrim($str, '/') . '/*');
-		foreach ($scan as $index => $path) {
-			recursiveDelete($path);
-		}
-		return @rmdir($str);
-	}
-}
-
-// -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
-
-
-// -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
-function fSetCookie($cName, $value)
-{
-	// All cookies will be set to 1 day - calcuated in seconds
-	// 3600 seconds = 1 hour
-	$expireTime = 3600 * 24 * 365; // Should be 1 year
-	$domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? $_SERVER['HTTP_HOST'] : false;
-	//setcookie('test1', 'test1 data '.$domain, time()+60*60*24*365, '/', $domain, false);
-
-
-	if (!setcookie($cName, $value, time() + $expireTime, '/', $domain, false)) {
-		$sPageTitle = "ERROR - Site functionality";
-		$sMessage = "This website uses cookies, please ensure your borwser supports cookies and they are enabled.";
-
-	}
-
-}
-
-
-function fGetCookie($cName)
-{
-	if (isset($_COOKIE[$cName])) {
-		//trace($_COOKIE[$cName]);
-		return $_COOKIE[$cName];
-	} else {
-		return null;
-	}
-}
-
-
-function fDeleteAllCookies()
-{
-
-	//check to see how to set the cookie
-	$Browsertype = $_SERVER['HTTP_USER_AGENT'];
-	$Parts = explode(" ", $Browsertype);
-	$MSIE = array_search("MSIE", $Parts);
-	$cnt = 0;
-
-	// unset cookies
-	if (isset($_SERVER['HTTP_COOKIE'])) {
-		$cnt++;
-		$cookies = explode(';', $_SERVER['HTTP_COOKIE']);
-		foreach ($cookies as $cookie) {
-			$parts = explode('=', $cookie);
-			$name = trim($parts[0]);
-			setcookie($name, '', (time() - 1000));
-			setcookie($name, '', time() - 1000, '/');
-
-		}
-	}
-
-
-}
-
-
-function fDumpCookiesToHTML()
-{
-	// after the page reloads, print them out
-	trace("COOKIE DUMP:");
-	foreach ($_COOKIE as $name => $value) {
-		echo "$name : $value <br />\n";
-	}
-
 }
 
 // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -

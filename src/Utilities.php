@@ -15,16 +15,50 @@ class Utilities
 {
 
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	public static function getNiceDateTime()
+	public static function getDateTimeUK()
 	{
-		$now  = date('d-m-y h:i:s'); // outout format 2008-04-04 07:30:00
+		$now  = date('d-m-Y H:i:s');
+		return $now;
+	}
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	public static function getDateTimeUS()
+	{
+		$now  = date('m-d-Y H:i:s');
+		return $now;
+	}
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	public static function getDateUK()
+	{
+		$now  = date('d-m-Y');
+		return $now;
+	}
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	public static function getDateUS()
+	{
+		$now  = date('m-d-Y');
+		return $now;
+	}
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	public static function getTime()
+	{
+		$now  = date('H:i:s');
 		return $now;
 	}
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 	
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	public static function getDateUK($input)
+	public static function getDateFrom($input)
 	{
 		$dt = new \DateTime($input);
 		return $dt->format("d/m/Y");
@@ -45,51 +79,88 @@ class Utilities
 
 
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	public static function xssClean($input)
+	public static function getYesNoFrom($input)
 	{
-		$output = rawurldecode($input);
-		$output = filter_var($output, FILTER_SANITIZE_STRING);
-		return $output;
+		$input_datatype = gettype($input);
+		//echo("FROM: " . $input_datatype . " TO: " . $datatype . "<br>\n");
+		switch ($input_datatype) {
+			case "boolean":
+				if ($input) {
+					return "yes";
+				} else {
+					return "no";
+				}
+				break;
+			case "string":
+				if ($input == "1" || $input == "true" || $input ==  "y" || $input == 1)
+				{
+					return "yes";
+				} else {
+					return "false";
+				}
+				break;
+			case "double":
+				if ($input >= 1){
+					return true;
+				} else {
+					return false;
+				}
+				break;
+			case "int":
+				if ($input >= 1){
+					return true;
+				} else {
+					return false;
+				}
+				break;
+		}
+
+		return null;
 	}
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
+
+
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	public static function getGet($param)
+	public static function getIntFromBoolean($input)
 	{
-		if (isSet($_GET[$param])) {
-			return $_GET[$param];
+		if (is_string($input)){
+			if ($input == "true"){
+				return 1;
+			} else {
+				return 0;
+			}
 		} else {
-			return null;
-		}
-	}
-	public static function getCleanGet($param)
-	{
-		if (isSet($_GET[$param])) {
-			return self::xssClean($_GET[$param]);
-		} else {
-			return null;
+			if ($input){
+				return 1;
+			} else {
+				return 0;
+			}
 		}
 	}
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
+
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	public static function getPost($param)
+	public static function getIntFromString($input)
 	{
-		if (isSet($_POST[$param])) {
-			return $_POST[$param];
-		} else {
-			return null;
+		if (is_string($input)){
+			$input = strtolower($input);
+			if ($input == "true" || $input == "yes" || $input == "y" || $input == "1") {
+				return 1;
+			} else {
+				return 0;
+			}
 		}
-	}
-	public static function getCleanPost($param)
-	{
-		if (isSet($_POST[$param])) {
-			return self::xssClean($_POST[$param]);
-		} else {
-			return null;
+
+		if (is_bool($input)){
+			if ($input == true){ return 1; }
+			if ($input == false){ return 0; }
 		}
+
+		return "ERROR: getBitFromString(): UNABLE TO GET BIT FROM [". $input . "]";
 	}
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -121,27 +192,8 @@ class Utilities
 
 
 	
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	public static function removeTrailingSlash($string)
-	{
-		return rtrim($string, '/');
-	}
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	
 
 
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	public static function generateRandomString($length = 10) {
-		//$characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-+=[]{}@:;#~`?.,<>|';
-		$characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-		$charactersLength = strlen($characters);
-		$randomString = '';
-		for ($i = 0; $i < $length; $i++) {
-			$randomString .= $characters[rand(0, $charactersLength - 1)];
-		}
-		return $randomString;
-	}
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -160,27 +212,6 @@ class Utilities
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
-
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	public static function doesFileExist($file_path)
-	{
-		if (file_exists($file_path)) {
-			return true;
-		}
-		return false;
-	}
-
-	public static function doesDirExist($path)
-	{
-		return doesFileExist($path);
-	}
-
-	public static function doesDirctoryExist($path)
-	{
-		return doesFileExist($path);
-	}
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	public static function getUserIP()
 	{
@@ -198,26 +229,57 @@ class Utilities
 
 
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	public static function getStringBetween($startDelimiter, $endDelimiter, $str)
+	public static function convertDataType($input,$output_datatype)
 	{
-		$contents = array();
-		$startDelimiterLength = strlen($startDelimiter);
-		$endDelimiterLength = strlen($endDelimiter);
-		$startFrom = $contentStart = $contentEnd = 0;
-		while (false !== ($contentStart = strpos($str, $startDelimiter, $startFrom))) {
-			$contentStart += $startDelimiterLength;
-			$contentEnd = strpos($str, $endDelimiter, $contentStart);
-			if (false === $contentEnd) {
+
+		$input_datatype = gettype($input);
+		//echo("FROM: " . $input_datatype . " TO: " . $output_datatype . "<br>\n");
+		switch ($output_datatype)
+		{
+			case "string":
+				if ($input_datatype == "boolean"){
+					if ($input){
+						return "true";
+					} else {
+						return "false";
+					}
+				}
+				return (string)$input;
 				break;
-			}
-			$contents[] = substr($str, $contentStart, $contentEnd - $contentStart);
-			yield substr($str, $contentStart, $contentEnd - $contentStart);
-			$startFrom = $contentEnd + $endDelimiterLength;
+
+			case "int":
+				$input = preg_replace("/[^0-9\.]/", "",$input);
+				return (int)$input;
+				break;
+
+			case "integer":
+				$input = preg_replace("/[^0-9]/","",$input);
+				return (int)$input;
+				break;
+
+			case "float":
+				trace("input = " . $input);
+				$input = preg_replace("/[^0-9\.]/", "",$input);
+				return (float)$input;
+				break;
+
+			case "double":
+				$input = preg_replace("/[^0-9\.]/", "",$input);
+				return (double)$input;
+				break;
+
+			case "boolean":
+				return self::getBoolean($input);
+				break;
+
+			case "bool":
+				return self::getBoolean($input);
+				break;
+
+			default:
+				return $input;
+				break;
 		}
-		$startDelimiterLength = null;
-		$endDelimiterLength = null;
-		$startFrom = null;
-		yield $contents;
 	}
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -290,15 +352,11 @@ class Utilities
 				break;
 			// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 			case "double":
-				if ($input == 0){
+				if ($input < 1){
 					return false;
-				}
-
-				if ($input == 1){
+				} else {
 					return true;
 				}
-
-				return $msg;
 				break;
 			// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 			case "NULL":
@@ -315,30 +373,4 @@ class Utilities
 
 	
 
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	public static function toString($input)
-	{
-		//http://php.net/manual/en/function.gettype.php
-		switch (gettype($input))
-		{
-			// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-			case "boolean":
-				if ($input){
-					return "true";
-				} else {
-					return "false";
-				}
-				break;
-			// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-			case "NULL":
-				return "NULL";
-				break;
-			// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-			default:
-				return $input;
-				break;
-			// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-		}
-	}
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 }

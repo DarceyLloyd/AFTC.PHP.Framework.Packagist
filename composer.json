@@ -15,8 +15,11 @@
     }
   },
   "require": {
-    "php": ">=5.5.0",
-    "phpmailer/phpmailer": "dev-master",
-    "defuse/php-encryption": "dev-master"
+    "php": ">=7.0.0",
+    "phpmailer/phpmailer": "^5.2.23",
+    "defuse/php-encryption": "^2.0.3",
+    "nikic/fast-route": "^1.2.0",
+    "doctrine/dbal": "^2.5.12",
+    "twig/twig": "^2.0"
   }
 }

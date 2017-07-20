@@ -7,27 +7,44 @@
 namespace AFTC\Framework\Core;
 
 use AFTC\Framework\Config as Config;
-use AFTC\Framework\Core\Database\Drivers\PDODriver;
-use AFTC\Framework\Core\Database\Drivers\MySQLiDriver;
-//use AFTC\Framework\Core\Database\Drivers\PostgreDriver;
-use AFTC\Framework\Singleton;
+use AFTC\Framework\Patterns\Singleton;
+use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Driver\PDOMySql\Driver;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DriverManager;
 
 class Database
 {
-	// Trait
+	// http://www.doctrine-project.org/projects/dbal.html
+	// http://doctrine-orm.readthedocs.io/projects/doctrine-dbal/en/latest/index.html
+	// https://www.thedevfiles.com/2014/08/simplifying-database-interactions-with-doctrine-dbal/
+	// http://www.doctrine-project.org/api/dbal/2.5/class-Doctrine.DBAL.Connection.html
+
+	// Patterns
 	use Singleton;
 
-	// Vars
-	public $driver;
-	
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	public function __construct()
+	public $config;
+	public $con;
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	private function __construct()
 	{
-		if (strtolower(Config::$database_driver) === "pdo"){
-			$this->driver = new PDODriver();
-		} elseif (strtolower(Config::$database_driver) === "mysqli"){
-			//$this->driver = new MySQLiDriver();
-		}
+		$this->config = new \Doctrine\DBAL\Configuration();
+
+		$connectionParams = array(
+			'driver' => Config::$database_driver,
+			'charset' => Config::$database_charset,
+			'host' => Config::$database_host,
+			'port' => Config::$database_port,
+			'dbname' => Config::$database_db,
+			'user' => Config::$database_username,
+			'password' => Config::$database_password,
+		);
+
+		$this->con = \Doctrine\DBAL\DriverManager::getConnection($connectionParams, $this->config);
 	}
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -38,36 +55,36 @@ class Database
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	public function getNumRows()
 	{
-		return $this->driver->getNumRows();
+		return $this->con->getNumRows();
 	}
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	public function getInsertId()
 	{
-		return $this->driver->getInsertID();
+		return $this->con->getInsertID();
 	}
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	public function queryToHTML()
 	{
-		return $this->driver->queryToHTML();
+		return $this->con->queryToHTML();
 	}
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	public function isConnected()
 	{
-		return $this->driver->isConnected();
+		return $this->con->isConnected();
 	}
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	
+
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	public function disconnect()
 	{
-		$this->driver->disconnect();
+		$this->con->close();
 	}
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	
+
 }

@@ -6,12 +6,19 @@
 
 namespace AFTC\Framework\Core;
 
-use AFTC\Framework\Core\Database;
+use AFTC\Framework\Config;
+use Doctrine\DBAL\DriverManager;
 
 
 class Model
 {
+	// http://www.doctrine-project.org/projects/dbal.html
+	// http://doctrine-orm.readthedocs.io/projects/doctrine-dbal/en/latest/index.html
+	// https://www.thedevfiles.com/2014/08/simplifying-database-interactions-with-doctrine-dbal/
+
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	//public $con;
+	private $database;
 	protected $db;
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	
@@ -19,88 +26,19 @@ class Model
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	public function __construct()
 	{
-		$this->db = Database::getInstance();
-		//trace("Model.Construct(): DB Instance created [" . $this->db->getID() . "]");
-	}
-
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	
-
-	protected function getRow($sql, $params = null)
-	{
-		return $this->db->driver->getRow($sql, $params);
-	}
-
-	protected function getRows($sql, $params = null)
-	{
-		return $this->db->driver->getRows($sql, $params);
-	}
-
-	protected function query($sql, $params = null)
-	{
-		return $this->db->driver->query($sql, $params);
-	}
-
-	protected function insert($sql, $params = null)
-	{
-		return $this->db->driver->insert($sql, $params);
-	}
-
-	protected function update($sql, $params = null)
-	{
-		return $this->db->driver->update($sql, $params);
-	}
-
-	protected function delete($sql, $params = null)
-	{
-		return $this->db->driver->delete($sql, $params);
-	}
-
-	protected function like($sql, $input)
-	{
-		return $this->db->driver->like($sql, $input);
-	}
-
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	public function getResult($index=null)
-	{
-		if ($index==null){
-			return $this->db->driver->result;
-		} else {
-			return $this->db->driver->result[$index];
-		}
-
+		$this->database = Database::getInstance();
+		$this->db = $this->database->con; // To allow developer models to use $this->db->dbalCommand
+		//trace("Database(): Instance created/obtained id:[" . $this->database->getID() . "]");
 	}
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	public function getNumRows()
+	public function getConnection()
 	{
-		return $this->db->driver->getNumRows();
+		trace("Model.getConnection()");
+		return $this->database->con;
 	}
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	public function getInsertId()
-	{
-		return $this->db->driver->getInsertId();
-	}
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	public function getQueryTime()
-	{
-		return $this->db->driver->query_time;
-	}
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	public function query2HTML()
-	{
-		return $this->db->driver->query2HTML();
-	}
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 }
