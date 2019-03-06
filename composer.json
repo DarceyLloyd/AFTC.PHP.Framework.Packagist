@@ -1,13 +1,20 @@
 {
-  "name": "darcey/aftc19",
-  "description": "aftc framework project",
+  "name": "aftc/framework-template",
+  "description": "AFTC Framework Template Project.",
   "type": "project",
-  "version": "0.1.0",
+  "version": "0.1.1",
+  "license": "MIT",
   "authors": [
     {
       "name": "Darcey",
       "email": "Darcey.Lloyd@gmail.com"
     }
+  ],
+  "keywords": [
+    "framework",
+    "aftc",
+    "install",
+    "template"
   ],
   "autoload": {
     "psr-4": {
@@ -15,7 +22,7 @@
       "AFTC\\Framework\\": "AFTC\\framework\\src"
     }
   },
-  "minimum-stability": "dev",
+  "minimum-stability": "stable",
   "require": {
     "php": ">=7.3.0",
     "nikic/fast-route": "^1.3"
