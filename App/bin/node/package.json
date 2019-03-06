@@ -1,0 +1,11 @@
+{
+  "name": "aftc-framework-cli",
+  "version": "0.0.1",
+  "description": "AFTC PHP Framework CLI",
+  "main": "aftc.js",
+  "scripts": {
+    "test": "aftc a b c d e f"
+  },
+  "author": "",
+  "license": "ISC"
+}

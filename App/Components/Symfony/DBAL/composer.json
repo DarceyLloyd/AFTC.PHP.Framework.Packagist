@@ -1,0 +1,15 @@
+{
+    "name": "aftc/database_component",
+    "description": "Wrapper for DBAL to integrate as a component with the AFTC Framework",
+    "type": "component",
+    "authors": [
+        {
+            "name": "Darcey",
+            "email": "Darcey.Lloyd@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "doctrine/dbal": "^2.9"
+    }
+}

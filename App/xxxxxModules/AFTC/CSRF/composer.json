@@ -1,0 +1,13 @@
+{
+    "name": "aftc/csrf",
+    "description": "aftc framework csrf module",
+    "authors": [
+        {
+            "name": "Darcey",
+            "email": "Darcey.Lloyd@gmail.com"
+        }
+    ],
+    "require": {
+        "ircmaxell/random-lib": "^1.2"
+    }
+}

@@ -1,0 +1,20 @@
+Helpers
+A collection of functions by vendor/helper_name.php
+They are not class's and should not use packages or libraries or framework functionality.
+
+Libraries
+Libraries are php classes which help with a task, they should not use packages, other libraries but may use framework functionality.
+
+Modules
+Modules are sub applications which can use packages but shouldn't rely on any helpers or libraries installed into the framework or your application. They should be loosly coupled, installed and un-installed using the AFTC command line utility to maintain composer.json integrity.
+
+
+13/02:2019
+Helpers
+A collection of functions by vendor_name/helper_name.php
+
+Libraries
+A Class file which performs a specific function vendor_name/library_name.php (shouldn't use any helpers or framework functions but it can at the sacrifice of portability).
+
+Modules
+A vendor_name/module_name contained sub application which should have it's composer.json integrated into the main applications composer.json for autoloading with the framework.

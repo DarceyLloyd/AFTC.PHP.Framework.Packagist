@@ -1,0 +1,42 @@
+{
+  "name": "aftc/framework",
+  "description": "The AFTC Framework.",
+  "version": "0.1.0",
+  "keywords": [
+    "framework",
+    "aftc"
+  ],
+  "license": "MIT",
+  "type": "project",
+  "authors": [
+    {
+      "name": "Darcey",
+      "email": "Darcey@AFTC.io"
+    }
+  ],
+  "minimum-stability": "stable",
+  "autoload": {
+    "psr-4": {
+      "AFTC\\Framework\\": "AFTC",
+      "AFTC\\App\\": "../../App"
+    },
+    "old-psr-4": {
+      "AFTC\\Framework\\": "AFTC",
+      "AFTC\\App\\": "../../App",
+      "FastRoute\\": "vendor/nikic/fast-route/src"
+    }
+  },
+  "require": {
+    "php": ">=7.3.0",
+    "symfony/http-foundation": "^4.2"
+  },
+  "old-require": {
+    "php": ">=7.3.0",
+    "twig/twig": "^2.6",
+    "nikic/fast-route": "^1.3",
+    "doctrine/dbal": "^2.9",
+    "doctrine/migrations": "^2.0",
+    "doctrine/orm": "^2.6",
+    "symfony/http-foundation": "^4.2"
+  }
+}

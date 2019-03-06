@@ -1,0 +1,12 @@
+{
+    "name": "aftc/session",
+    "description": "Session manager for the AFTC Framework",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Darcey",
+            "email": "Darcey.Lloyd@gmail.com"
+        }
+    ],
+    "require": {}
+}

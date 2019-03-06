@@ -1,0 +1,8 @@
+{
+  "helpers": {
+    "string": ">=1.0.0"
+  },
+  "libraries": {
+    "throttle": ">=1.0.0"
+  }
+}

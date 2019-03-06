@@ -1,0 +1,23 @@
+{
+  "name": "darcey/aftc19",
+  "description": "aftc framework project",
+  "type": "project",
+  "version": "0.1.0",
+  "authors": [
+    {
+      "name": "Darcey",
+      "email": "Darcey.Lloyd@gmail.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "AFTC\\App\\": "App",
+      "AFTC\\Framework\\": "AFTC\\framework\\src"
+    }
+  },
+  "minimum-stability": "dev",
+  "require": {
+    "php": ">=7.3.0",
+    "nikic/fast-route": "^1.3"
+  }
+}
