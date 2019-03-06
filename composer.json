@@ -1,25 +1,27 @@
 {
   "name": "aftc/framework",
   "description": "The AFTC Framework.",
+  "version": "0.1.0",
   "keywords": [
     "framework",
     "aftc"
   ],
   "license": "MIT",
   "type": "project",
-  "author": "Darcey Lloyd",
-  "minimum-stability": "dev",
+  "authors": [
+    {
+      "name": "Darcey",
+      "email": "Darcey@AFTC.io"
+    }
+  ],
+  "minimum-stability": "stable",
   "autoload": {
     "psr-4": {
-      "AFTC\\Framework\\": "src"
+      "AFTC\\Framework\\": "AFTC",
+      "AFTC\\App\\": "../../App"
     }
   },
   "require": {
-    "php": ">=7.0.0",
-    "phpmailer/phpmailer": "^5.2.23",
-    "defuse/php-encryption": "^2.0.3",
-    "nikic/fast-route": "^1.2.0",
-    "doctrine/dbal": "^2.5.12",
-    "twig/twig": "^2.0"
+    "php": ">=7.3.0"
   }
 }
