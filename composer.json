@@ -22,9 +22,9 @@
       "AFTC\\Framework\\": "AFTC\\framework\\src"
     }
   },
-  "minimum-stability": "stable",
+  "minimum-stability": "dev",
   "require": {
-    "php": ">=7.3.0",
+    "php": ">=7.2.0",
     "nikic/fast-route": "^1.3"
   }
 }
