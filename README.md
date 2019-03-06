@@ -1,1 +1,0 @@
-# AFTC PHP Framework
